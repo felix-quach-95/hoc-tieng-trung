@@ -1387,7 +1387,7 @@ function FM(p){if(!p.sg||S.cfg.gram===false)return"";
  return`<div class="fm">Công thức: ${p.sg.filter(s=>s[1].slice(2)).map(([t,r])=>`<b class="s${CLS[r[0]]||"X"}">${RB(r.slice(2))}</b>`).join(" + ")}</div>`}
 // Ô "Từ mới trong câu": mọi từ, cụm từ của ví dụ đang hiện, bấm vào chữ để nghe.
 function VOC(p){const ws=words(p);if(!ws.length)return"";
- return`<div class="card voc"><h3>📒 Từ mới trong câu (${ws.length})</h3>${ws.map(x=>`<div class="vr"><button class="vb han" title="Nghe" onclick="say('${x.w}')">${x.w}</button><span class="vp">${S.cfg.showPy?x.sy.map(s=>{const t=S.cfg.color?toneOf(s):0;return t?`<span class="t${t}">${s}</span>`:s}).join(""):""}</span><span class="vv">${x.vi}</span></div>`).join("")}</div>`}
+ return`<div class="card voc"><h3>📒 Từ mới trong câu (${ws.length})</h3>${ws.map(x=>`<div class="vr"><button class="vb han" title="Nghe" onclick="say('${x.w}')">${x.w}</button><span class="vp">${S.cfg.showPy?x.sy.map(s=>{const t=S.cfg.color?toneOf(s):0;return t?`<span class="t${t}">${s}</span>`:s}).join(""):""}</span><span class="vv">${RB(x.vi)}</span></div>`).join("")}</div>`}
 function PY(py){return S.cfg.showPy?(S.cfg.color?CP(py):py):""}
 /* ---------- PINYIN CHO MỌI CHỮ HÁN ----------
    Quy tắc của app: chữ Hán hiện ở đâu cũng phải có pinyin. Câu ví dụ có dòng pinyin riêng; mọi chỗ khác
@@ -1484,7 +1484,7 @@ function vReview(){
  if(ctx.i>=ctx.q.length)return`<div class="card">✅ Ôn xong ${ctx.q.length} thẻ.</div>`+nav(false);
  const p=P(ctx.q[ctx.i]);
  return`<div class="hint" style="text-align:center">Thẻ ${ctx.i+1}/${ctx.q.length}. Nói thành tiếng câu tiếng Trung trước khi bấm.</div>
- <div class="card"><div class="vi">${p.vi}</div>
+ <div class="card"><div class="vi">${RB(p.vi)}</div>
  ${ctx.show?`<div class="zh">${ZH(p)}</div>${FM(p)}<div class="py">${PY(p.py)}</div><div class="row"><button onclick="say(P('${p.id}').zh)">🔊 Nghe</button><button onclick="slow(P('${p.id}').zh)">🐢 Chậm</button></div>`
  :`<div class="row"><button class="pri" onclick="reveal()">Hiện đáp án</button></div>`}</div>
  ${ctx.show?`<div class="row"><button class="bad" onclick="rate(0)">Quên</button><button onclick="rate(1)">Khó</button><button class="ok" onclick="rate(2)">Nhớ</button></div>`:""}`}
@@ -1498,7 +1498,7 @@ function vLearn(){
  const p=ps[ctx.i];if(!S.srs[p.id]){S.srs[p.id]={box:0,due:addDays(1)};save()}
  if(ctx.first){ctx.first=false;autoSay(p.zh)}
  return`<div class="hint" style="text-align:center">Bài ${pos(S.lesson)+1}: ${RB(L().t)} · câu ${ctx.i+1}/${ps.length}</div>
- <div class="card">${p.h?`<div class="hint">🧩 ${RB(p.h)}</div>`:""}<div class="zh">${ZH(p)}</div>${FM(p)}<div class="py">${PY(p.py)}</div><div class="vi">${p.vi}</div>
+ <div class="card">${p.h?`<div class="hint">🧩 ${RB(p.h)}</div>`:""}<div class="zh">${ZH(p)}</div>${FM(p)}<div class="py">${PY(p.py)}</div><div class="vi">${RB(p.vi)}</div>
  <div class="row"><button onclick="say(P('${p.id}').zh)">🔊 Nghe</button><button onclick="slow(P('${p.id}').zh)">🐢 Chậm</button></div></div>
  <div class="row"><button onclick="learnGo(-1)" ${ctx.i?"":"disabled"}>←</button><button class="pri" onclick="learnGo(1)">Câu tiếp →</button></div>${VOC(p)}`}
 function learnGo(d){ctx.i+=d;ctx.first=true;render()}
@@ -1526,7 +1526,7 @@ function vShadow(){
  if(ctx.i>=ps.length)return`<div class="card">✅ Xong lượt nhắc lại.</div><div class="row"><button onclick="ctx.i=0;render()">Làm lại</button></div>`+nav();
  const p=ps[ctx.i];
  return`<div class="hint" style="text-align:center">Nghe → nhắc lại to, bắt chước ngữ điệu · ${ctx.i+1}/${ps.length}</div>
- <div class="card"><div class="zh">${ZH(p)}</div>${FM(p)}<div class="py">${PY(p.py)}</div><div class="hint">${p.vi}</div>
+ <div class="card"><div class="zh">${ZH(p)}</div>${FM(p)}<div class="py">${PY(p.py)}</div><div class="hint">${RB(p.vi)}</div>
  <div class="row"><button onclick="say(P('${p.id}').zh)">🔊 Bình thường</button><button onclick="slow(P('${p.id}').zh)">🐢 Chậm</button><button class="pri" onclick="mic(P('${p.id}').zh,'res')">🎤 Tôi nói</button></div>
  <div id="res" class="hint"></div></div>
  <div class="row"><button class="bad" onclick="shadowRate(0)">Chưa tốt</button><button class="ok" onclick="shadowRate(2)">Ổn rồi</button></div>${VOC(p)}`}
@@ -1543,7 +1543,7 @@ function vDialog(){
  const done=ctx.i>=ds.length;let h=`<div class="row"><span class="hint">Bạn đóng vai ${ctx.role}</span><button onclick="playAll()">▶ Nghe cả đoạn</button><button onclick="swapRole()">Đổi vai</button><button onclick="ctx.hide=!ctx.hide;render()">${ctx.hide?"Hiện chữ":"Ẩn chữ"}</button></div>`;
  h+=`<div class="card" style="text-align:left">`;
  for(let k=0;k<Math.min(ctx.i+1,ds.length);k++){const l=ds[k],me=l.who===ctx.role,cur=k===ctx.i,hid=ctx.hide&&me&&cur;
-  h+=`<div class="bub ${me?"me":""}"><b>${l.who}:</b> ${hid?"…（đến lượt bạn nói）":l.zh}<small>${hid?"":PY(l.py)}</small><small>${l.vi}</small></div>`}
+  h+=`<div class="bub ${me?"me":""}"><b>${l.who}:</b> ${hid?"…（đến lượt bạn nói）":l.zh}<small>${hid?"":PY(l.py)}</small><small>${RB(l.vi)}</small></div>`}
  h+=`</div>`;
  if(done)return h+`<div class="card">✅ Hết hội thoại. Hãy đổi vai và làm lại một lần nữa.<div class="note"><b>🗣 Tự nói 1 phút</b><br>Không nhìn chữ, tự nói thành tiếng về chủ đề "${RB(L().t)}" bằng ít nhất 3 câu vừa học, đổi tên, số, địa điểm cho đúng với bạn. Tự tạo câu mới là bước biến câu thuộc lòng thành câu của mình.</div></div><div class="row"><button onclick="ctx.i=0;ctx.start=true;render()">Làm lại</button></div>`+nav();
  const l=ds[ctx.i],me=l.who===ctx.role;
@@ -1569,11 +1569,11 @@ function vQuiz(){
  const q=ctx.qs[ctx.i],nxt=`<div class="row"><button class="pri" onclick="ctx.i++;ctx.ans=null;ctx.auto=true;render()">Tiếp →</button></div>`;
  const head=`<div class="hint" style="text-align:center">Câu ${ctx.i+1}/${ctx.qs.length}</div>`;
  if(q.type==="build"){
-  return head+`<div class="card"><div class="vi">Sắp xếp thành câu: ${q.p.vi}</div><div class="zh" style="min-height:56px">${q.b.map(i=>rb(q.tok[i],q.tp[i])).join("")||"…"}</div>
+  return head+`<div class="card"><div class="vi">Sắp xếp thành câu: ${RB(q.p.vi)}</div><div class="zh" style="min-height:56px">${q.b.map(i=>rb(q.tok[i],q.tp[i])).join("")||"…"}</div>
   ${q.res!==null?`<div>${q.res?"✅ Đúng":"❌ Đáp án:"} <b>${q.p.zh}</b></div><div class="py">${PY(q.p.py)}</div>`:""}</div>`+
   (q.res===null?`<div class="row">${q.tok.map((c,i)=>`<button ${q.b.includes(i)?"disabled":""} onclick="bTap(${i})" style="font-size:24px">${rb(c,q.tp[i])}</button>`).join("")}</div><div class="row"><button onclick="ctx.qs[ctx.i].b=[];render()">Xóa</button></div>`:nxt)}
  if(ctx.auto&&q.type==="listen"){ctx.auto=false;autoSay(q.p.zh)}
- return head+`<div class="card">${q.type==="listen"?`<div class="vi">Nghe và chọn câu đúng</div><div class="row"><button onclick="say(ctx.qs[ctx.i].p.zh)">🔊 Nghe</button></div>`:`<div class="vi">${q.p.vi}</div>`}</div>`+
+ return head+`<div class="card">${q.type==="listen"?`<div class="vi">Nghe và chọn câu đúng</div><div class="row"><button onclick="say(ctx.qs[ctx.i].p.zh)">🔊 Nghe</button></div>`:`<div class="vi">${RB(q.p.vi)}</div>`}</div>`+
  q.opts.map((o,k)=>`<button class="opt ${ctx.ans!==null?(o.id===q.p.id?"good":k===ctx.ans?"wrong":""):""}" ${ctx.ans!==null?"disabled":""} onclick="answer(${k})">${o.zh} <span class="hint">${PY(o.py)}</span></button>`).join("")+
  (ctx.ans!==null?nxt:"")}
 function answer(k){const q=ctx.qs[ctx.i];ctx.ans=k;const ok=q.opts[k].id===q.p.id;if(ok)ctx.ok++;grade(q.p.id,ok?2:0);render();say(q.p.zh)}
